@@ -89,4 +89,24 @@ describe("gameBoard module", () => {
       expect(() => game.receiveAttack(1, 1)).toThrow("Already Attacked");
     });
   });
+  describe("Sunk Ships", () => {
+    test("when a ship is sunk, it moves to sunkShips tracker", () => {
+      const ship = createShip(1);
+      game.placeShip(ship, 1, 1);
+      game.receiveAttack(1, 1);
+      expect(game.getSunkShips().length).toEqual(1);
+    });
+    test("game tracks multiple ships sinking", () => {
+      const ship1 = createShip(1);
+      const ship2 = createShip(1);
+      game.placeShip(ship1, 1, 1);
+      game.placeShip(ship2, 2, 2);
+      game.receiveAttack(1, 1);
+      game.receiveAttack(2, 2);
+      expect(game.getSunkShips().length).toEqual(2);
+    });
+  });
+  describe("Game Over", () => {
+    test("game returns 'game over' when all ships are sunk", () => {});
+  });
 });

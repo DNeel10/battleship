@@ -3,6 +3,8 @@ export default function createGameBoard() {
     return Array.from({ length: 10 }, () => null);
   });
 
+  const sunkShips = [];
+
   function isCellValid(x, y) {
     return x >= 0 && x < 10 && y >= 0 && y < 10;
   }
@@ -20,6 +22,10 @@ export default function createGameBoard() {
 
   function getBoard() {
     return board;
+  }
+
+  function getSunkShips() {
+    return sunkShips;
   }
 
   function canPlaceShip(ship, x, y, direction = "horizontal") {
@@ -57,7 +63,12 @@ export default function createGameBoard() {
       let ship = board[y][x];
 
       ship.hit();
-      return (board[y][x] = { status: "Hit", ship });
+      board[y][x] = { status: "Hit", ship };
+      if (ship.isSunk()) {
+        sunkShips.push(ship);
+        return board[y][x];
+      }
+      return board[y][x];
     } else {
       return (board[y][x] = { status: "Miss" });
     }
@@ -65,6 +76,7 @@ export default function createGameBoard() {
 
   return {
     getBoard,
+    getSunkShips,
     placeShip,
     receiveAttack,
   };
