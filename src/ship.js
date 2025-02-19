@@ -10,6 +10,7 @@ export default function createShip(length) {
   }
 
   return {
+    length,
     hit,
     get hitsRemaining() {
       return hitsRemaining;
