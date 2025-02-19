@@ -11,10 +11,21 @@ export default function createGameBoard() {
     return board[y][x] === null;
   }
 
+  function isCellAttackable(x, y) {
+    if (!board[y][x]) return true;
+    if (board[y][x].status === "Miss" || board[y][x].status === "Hit")
+      return false;
+    return true;
+  }
+
+  function getBoard() {
+    return board;
+  }
+
   function canPlaceShip(ship, x, y, direction = "horizontal") {
     for (let i = 0; i < ship.length; i++) {
       const newX = direction === "horizontal" ? x + i : x;
-      const newY = direction === "veritcal" ? y + i : y;
+      const newY = direction === "vertical" ? y + i : y;
 
       if (!isCellValid(newX, newY) || !isCellEmpty(newX, newY)) {
         return false;
@@ -38,17 +49,22 @@ export default function createGameBoard() {
     if (!isCellValid(x, y)) {
       throw new Error("Invalid Selection");
     }
+    if (!isCellAttackable(x, y)) {
+      throw new Error("Already Attacked");
+    }
+
     if (!isCellEmpty(x, y)) {
-      return (board[y][x] = "Hit!");
+      let ship = board[y][x];
+
+      ship.hit();
+      return (board[y][x] = { status: "Hit", ship });
     } else {
-      return (board[y][x] = "Miss!");
+      return (board[y][x] = { status: "Miss" });
     }
   }
 
   return {
-    getBoard: () => {
-      return board;
-    },
+    getBoard,
     placeShip,
     receiveAttack,
   };

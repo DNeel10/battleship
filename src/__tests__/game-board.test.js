@@ -65,16 +65,28 @@ describe("gameBoard module", () => {
       expect(game.receiveAttack(0, 0)).toBeDefined;
     });
     test("the board can report a miss", () => {
-      expect(game.receiveAttack(0, 0)).toBe("Miss!");
+      expect(game.receiveAttack(0, 0)).toEqual({ status: "Miss" });
     });
     test("the board can report a hit", () => {
       const ship = createShip(2);
 
       game.placeShip(ship, 1, 1);
-      expect(game.receiveAttack(1, 1)).toBe("Hit!");
+      expect(game.receiveAttack(1, 1)).toEqual({ status: "Hit", ship });
     });
     test("cannot receive attacks outside the bounds of the gameBoard", () => {
       expect(() => game.receiveAttack(10, 10)).toThrow("Invalid Selection");
+    });
+    test("a hit decrements the hitsRemaining counter on a ship", () => {
+      const ship = createShip(2);
+      game.placeShip(ship, 1, 1);
+      game.receiveAttack(1, 1);
+      expect(ship).toHaveProperty("hitsRemaining", 1);
+    });
+    test("a cell that has been hit cannot be attacked again", () => {
+      const ship = createShip(2);
+      game.placeShip(ship, 1, 1);
+      game.receiveAttack(1, 1);
+      expect(() => game.receiveAttack(1, 1)).toThrow("Already Attacked");
     });
   });
 });
