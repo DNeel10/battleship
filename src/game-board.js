@@ -3,6 +3,7 @@ export default function createGameBoard() {
     return Array.from({ length: 10 }, () => null);
   });
 
+  const activeShips = [];
   const sunkShips = [];
 
   function isCellValid(x, y) {
@@ -48,6 +49,7 @@ export default function createGameBoard() {
       const newX = direction === "horizontal" ? x + i : x;
       const newY = direction === "vertical" ? y + i : y;
       board[newY][newX] = ship;
+      activeShips.push(ship);
     }
   }
 
@@ -74,10 +76,16 @@ export default function createGameBoard() {
     }
   }
 
+  function gameOver() {
+    if (activeShips.length === 0) return false;
+    return sunkShips.length === activeShips.length;
+  }
+
   return {
     getBoard,
     getSunkShips,
     placeShip,
     receiveAttack,
+    gameOver,
   };
 }

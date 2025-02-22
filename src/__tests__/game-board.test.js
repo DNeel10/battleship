@@ -65,7 +65,10 @@ describe("gameBoard module", () => {
       expect(game.receiveAttack(0, 0)).toBeDefined;
     });
     test("the board can report a miss", () => {
-      expect(game.receiveAttack(0, 0)).toEqual({ status: "Miss" });
+      const board = game.getBoard();
+      game.receiveAttack(0, 0);
+      // expect(game.receiveAttack(0, 0)).toEqual({ status: "Miss" });
+      expect(board[0][0].status).toEqual("Miss");
     });
     test("the board can report a hit", () => {
       const ship = createShip(2);
@@ -90,23 +93,44 @@ describe("gameBoard module", () => {
     });
   });
   describe("Sunk Ships", () => {
-    test("when a ship is sunk, it moves to sunkShips tracker", () => {
-      const ship = createShip(1);
-      game.placeShip(ship, 1, 1);
-      game.receiveAttack(1, 1);
-      expect(game.getSunkShips().length).toEqual(1);
-    });
-    test("game tracks multiple ships sinking", () => {
-      const ship1 = createShip(1);
-      const ship2 = createShip(1);
+    let ship1, ship2;
+
+    beforeEach(() => {
+      ship1 = createShip(1);
+      ship2 = createShip(1);
       game.placeShip(ship1, 1, 1);
       game.placeShip(ship2, 2, 2);
       game.receiveAttack(1, 1);
       game.receiveAttack(2, 2);
+    });
+
+    test("game tracks multiple ships sinking", () => {
       expect(game.getSunkShips().length).toEqual(2);
+    });
+    test("game can identify individual sunk ships", () => {
+      expect(game.getSunkShips()).toContain(ship1);
+      expect(game.getSunkShips()).toContain(ship2);
     });
   });
   describe("Game Over", () => {
-    test("game returns 'game over' when all ships are sunk", () => {});
+    let ship1, ship2;
+
+    beforeEach(() => {
+      ship1 = createShip(1);
+      ship2 = createShip(1);
+      game.placeShip(ship1, 1, 1);
+      game.placeShip(ship2, 2, 2);
+    });
+
+    test("gameOver returns false when ships are still remaining", () => {
+      game.receiveAttack(1, 1);
+      expect(game.gameOver()).toBe(false);
+    });
+
+    test("game returns 'game over' when all ships are sunk", () => {
+      game.receiveAttack(1, 1);
+      game.receiveAttack(2, 2);
+      expect(game.gameOver()).toBe(true);
+    });
   });
 });
