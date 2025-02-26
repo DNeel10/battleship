@@ -1,5 +1,4 @@
 import createPlayer from "../player";
-import createGameBoard from "../game-board";
 jest.mock("../game-board");
 
 describe("player module", () => {
@@ -26,5 +25,24 @@ describe("attack method", () => {
   test("the attack method calls receive attack on the opponents board", () => {
     player1.attack(player2, 1, 1);
     expect(board2.receiveAttack).toHaveBeenCalledWith(1, 1);
+  });
+});
+
+describe("placeShip method", () => {
+  let player1, board1, mockShip;
+  beforeEach(() => {
+    board1 = {
+      placeShip: jest.fn(),
+      receiveAttack: jest.fn(),
+      getBoard: jest.fn(() => Array(10).fill(Array(10).fill(null))),
+    };
+    mockShip = {
+      length: 1,
+    };
+    player1 = createPlayer(board1);
+  });
+  test("placing a ship triggers the placeship method on the board object", () => {
+    player1.placeShip(mockShip, 1, 1);
+    expect(board1.placeShip).toHaveBeenCalledWith(mockShip, 1, 1, "horizontal");
   });
 });

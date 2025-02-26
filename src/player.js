@@ -3,8 +3,13 @@ export default function createPlayer(board) {
     opponent.board.receiveAttack(x, y);
   }
 
+  function placeShip(ship, x, y, direction = "horizontal") {
+    board.placeShip(ship, x, y, direction);
+  }
+
   return {
     board,
+    placeShip,
     attack,
   };
 }
