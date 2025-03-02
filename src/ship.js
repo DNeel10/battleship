@@ -1,4 +1,4 @@
-export default function createShip(length) {
+export default function createShip(length, name) {
   let hitsRemaining = length;
 
   function hit() {
@@ -12,6 +12,7 @@ export default function createShip(length) {
   return {
     length,
     hit,
+    name,
     get hitsRemaining() {
       return hitsRemaining;
     },
