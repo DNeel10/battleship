@@ -1,6 +1,7 @@
 import createPlayer from "./player";
 import createGameBoard from "./game-board";
 import createShip from "./ship";
+import { renderGameBoard, displayAvailableShips } from "./display";
 
 export default function initializeGame() {
   const board1 = createGameBoard();
@@ -43,20 +44,18 @@ export default function initializeGame() {
   }
 
   function checkAndAdvancePhase(players) {
-    console.log("Chcking if all ships are placed");
-    players.forEach((player, index) => {
-      console.log(
-        `player ${index + 1}: available ships`,
-        player.getAvailableShips()
-      );
-    });
     if (players.some((player) => player.getAvailableShips().length !== 0)) {
-      console.log("🚨 Phase should NOT change: Ships are still available!");
       throw new Error("All ships must be placed");
     } else {
-      console.log("🚨 Phase should change: Ships are all placed!");
       changePhase();
     }
+  }
+
+  function playGame() {
+    const player1Container = document.getElementById("player1-gameboard");
+    const player2Container = document.getElementById("player2-gameboard");
+    renderGameBoard(board1, player1Container);
+    renderGameBoard(board2, player2Container);
   }
 
   return {
@@ -65,5 +64,6 @@ export default function initializeGame() {
     changePhase,
     getPhase,
     checkAndAdvancePhase,
+    playGame,
   };
 }
