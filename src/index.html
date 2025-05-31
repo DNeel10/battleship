@@ -10,8 +10,15 @@
 <body>
   <div class="title">Battleship</div>
   <div id="game-container" class="game-container">
-    <div id="player1-gameboard" class="game-board"></div>
-    <div id="player2-gameboard" class="game-board"></div>
+    <div id="player1-container">
+      <button id="orientation-toggle">Direction: Horizontal</button>
+      <div id="player1-controls" class="ships-display"></div>
+      <div id="player1-gameboard" class="game-board"></div>
+    </div>
+    <div id="player2-container">
+      <div id="player2-controls" class="ships-display"></div>
+      <div id="player2-gameboard" class="game-board"></div>
+    </div>
 
   </div>
 </body>
