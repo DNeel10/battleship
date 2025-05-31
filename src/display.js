@@ -36,7 +36,7 @@ export function renderAvailableShips(
   ships,
   availableShipsContainer,
   handleSelectShip,
-  orientation
+  getOrientation
 ) {
   availableShipsContainer.innerHTML = "";
 
@@ -44,7 +44,7 @@ export function renderAvailableShips(
     const shipButton = document.createElement("button");
     shipButton.textContent = ship.name;
     shipButton.addEventListener("click", () => {
-      handleSelectShip(ship, orientation);
+      handleSelectShip(ship);
     });
     availableShipsContainer.appendChild(shipButton);
   });
