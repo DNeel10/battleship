@@ -1,11 +1,38 @@
 import createPlayer from "./player";
 import createGameBoard from "./game-board";
 import createShip from "./ship";
-import {
-  renderGameBoard,
-  displayAvailableShips,
-  renderAvailableShips,
-} from "./display";
+
+function generateShips() {
+  return [
+    createShip(5, "Carrier"),
+    createShip(4, "Battleship"),
+    createShip(3, "Cruiser"),
+    createShip(3, "Submarine"),
+    createShip(2, "Destroyer"),
+  ];
+}
+
+export function autoPlaceShips(player) {
+  const board = player.getBoard();
+  const ships = player.getAvailableShips();
+  const directions = ["horizontal", "vertical"];
+
+  ships.forEach((ship) => {
+    let placed = false;
+
+    while (!placed) {
+      const direction =
+        directions[Math.floor(Math.random() * directions.length)];
+      const x = Math.floor(Math.random() * 10);
+      const y = Math.floor(Math.random() * 10);
+
+      try {
+        player.placeShip(ship, x, y, direction);
+        placed = true;
+      } catch (error) {}
+    }
+  });
+}
 
 export default function initializeGame() {
   const board1 = createGameBoard();
@@ -15,26 +42,17 @@ export default function initializeGame() {
   const player1 = createPlayer(board1, ships1);
   const player2 = createPlayer(board2, ships2);
 
-  const player1ShipsContainer = document.getElementById("player1-controls");
-  const player2ShipsContainer = document.getElementById("player2-controls");
-
-  let selectedShip = null;
-  let orientation = "horizontal";
-  const getOrientation = () => orientation;
-
   const gameState = {
     currentPlayer: player1,
     phase: "placement",
   };
 
-  function generateShips() {
-    return [
-      createShip(5, "Carrier"),
-      createShip(4, "Battleship"),
-      createShip(3, "Cruiser"),
-      createShip(3, "Submarine"),
-      createShip(2, "Destroyer"),
-    ];
+  function getPlayers() {
+    return [player1, player2];
+  }
+
+  function getBoards() {
+    return [board1, board2];
   }
 
   function switchTurns() {
@@ -62,71 +80,14 @@ export default function initializeGame() {
     }
   }
 
-  function handleSelectShip(ship) {
-    selectedShip = ship;
-  }
-
-  function createCellClickHandler(player, board, container, shipsContainer) {
-    const handleCellClick = function (x, y) {
-      if (!selectedShip) {
-        console.log("No Selected Ship");
-        return;
-      }
-
-      try {
-        player.placeShip(selectedShip, x, y, orientation);
-        selectedShip = null;
-
-        renderGameBoard(board, container, handleCellClick);
-        renderAvailableShips(
-          player.getAvailableShips(),
-          shipsContainer,
-          handleSelectShip,
-          orientation
-        );
-      } catch (error) {
-        console.log(error.message);
-      }
-    };
-
-    return handleCellClick;
-  }
-
-  function setup() {
-    const player1Container = document.getElementById("player1-gameboard");
-    const player2Container = document.getElementById("player2-gameboard");
-    const orientationToggleButton =
-      document.getElementById("orientation-toggle");
-
-    orientationToggleButton.addEventListener("click", (e) => {
-      e.preventDefault;
-      console.log("clicked");
-      orientation = orientation === "horizontal" ? "vertical" : "horizontal";
-      orientationToggleButton.textContent = `Direction: ${orientation}`;
-    });
-
-    const player1Handler = createCellClickHandler(
-      player1,
-      board1,
-      player1Container,
-      player1ShipsContainer,
-      getOrientation
-    );
-
-    renderGameBoard(board1, player1Container, player1Handler);
-    renderAvailableShips(
-      ships1,
-      player1ShipsContainer,
-      handleSelectShip,
-      getOrientation
-    );
-  }
-
-  function playGame() {
-    setup();
-  }
-
   return {
-    playGame,
+    switchTurns,
+    getCurrentPlayer,
+    getPlayers,
+    getBoards,
+    changePhase,
+    getPhase,
+    checkAndAdvancePhase,
+    autoPlaceShips,
   };
 }

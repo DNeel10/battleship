@@ -1,4 +1,9 @@
-export function renderGameBoard(gameboard, boardContainer, handleCellClick) {
+export function renderGameBoard(
+  gameboard,
+  boardContainer,
+  handleCellClick,
+  isPlayerBoard = false
+) {
   const board = gameboard.getBoard();
 
   boardContainer.innerHTML = "";
@@ -21,7 +26,14 @@ export function renderGameBoard(gameboard, boardContainer, handleCellClick) {
         typeof cellValue === "object" &&
         typeof cellValue.hit === "function"
       ) {
-        gridCoordinate.classList.add("ship-cell");
+        if (isPlayerBoard) {
+          gridCoordinate.classList.add("ship-cell");
+        }
+      } else if (cell === "hit") {
+        gridCoordinate.classList.add("hit-cell");
+        gridCoordinate.textContent = "X";
+      } else if (cell === "miss") {
+        gridCoordinate.classList.add("miss-cell");
       }
       gridCoordinate.addEventListener("click", () => {
         handleCellClick(x, y);
@@ -35,13 +47,13 @@ export function renderGameBoard(gameboard, boardContainer, handleCellClick) {
 export function renderAvailableShips(
   ships,
   availableShipsContainer,
-  handleSelectShip,
-  getOrientation
+  handleSelectShip
 ) {
   availableShipsContainer.innerHTML = "";
 
   ships.forEach((ship) => {
     const shipButton = document.createElement("button");
+    shipButton.classList.add("ship-btn");
     shipButton.textContent = ship.name;
     shipButton.addEventListener("click", () => {
       handleSelectShip(ship);

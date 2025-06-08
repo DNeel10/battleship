@@ -1,4 +1,4 @@
-import initializeGame from "../game-controller";
+import initializeGame, { autoPlaceShips } from "../game-controller";
 import createGameBoard from "../game-board";
 import createPlayer from "../player";
 jest.mock("../player");
@@ -27,7 +27,7 @@ describe("game-controller module", () => {
       .mockReturnValueOnce(mockBoard2);
 
     mockPlayer1 = {
-      board: mockBoard1,
+      getBoard: jest.fn(() => mockBoard1),
       attack: jest.fn(),
       placeShip: jest.fn(),
       getAvailableShips: jest.fn(() => [
@@ -39,7 +39,7 @@ describe("game-controller module", () => {
     };
 
     mockPlayer2 = {
-      board: mockBoard2,
+      getBoard: jest.fn(() => mockBoard2),
       attack: jest.fn(),
       placeShip: jest.fn(),
       getAvailableShips: jest.fn(() => [
@@ -88,6 +88,33 @@ describe("game-controller module", () => {
       mockPlayer2.getAvailableShips.mockImplementation(() => []);
       game.checkAndAdvancePhase([mockPlayer1, mockPlayer2]);
       expect(game.getPhase()).toBe("attack");
+    });
+  });
+
+  describe("computer places ships", () => {
+    test("the computer automatically places ships in random approved locations", () => {
+      const mockShips = [
+        { length: 5, name: "Carrier" },
+        { length: 4, name: "Battleship" },
+        { length: 3, name: "Cruiser" },
+        { length: 3, name: "Submarine" },
+        { length: 2, name: "Destroyer" },
+      ];
+
+      mockPlayer2.getAvailableShips.mockReturnValue(mockShips);
+
+      autoPlaceShips(mockPlayer2);
+
+      expect(mockPlayer2.placeShip).toHaveBeenCalledTimes(mockShips.length);
+
+      mockShips.forEach((ship) => {
+        expect(mockPlayer2.placeShip).toHaveBeenCalledWith(
+          expect.objectContaining({ name: ship.name }),
+          expect.any(Number),
+          expect.any(Number),
+          expect.stringMatching(/horizontal|vertical/)
+        );
+      });
     });
   });
 });

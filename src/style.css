@@ -18,7 +18,12 @@
 
 .ships-display {
   display: flex;
+  min-height: 4em;
   gap: 1em;
+}
+
+.ship-btn {
+  max-height: 2em;
 }
 
 .ship-cell {

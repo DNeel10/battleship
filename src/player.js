@@ -2,7 +2,7 @@ export default function createPlayer(board, ships = []) {
   let availableShips = ships;
 
   function attack(opponent, x, y) {
-    opponent.board.receiveAttack(x, y);
+    opponent.getBoard().receiveAttack(x, y);
   }
 
   function placeShip(ship, x, y, direction = "horizontal") {
@@ -14,8 +14,12 @@ export default function createPlayer(board, ships = []) {
     return availableShips;
   }
 
+  function getBoard() {
+    return board;
+  }
+
   return {
-    board,
+    getBoard,
     placeShip,
     attack,
     getAvailableShips,
