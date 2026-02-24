@@ -30,3 +30,12 @@
   background-color: steelblue;
   border: 1px solid navy;
 }
+
+.hit-cell {
+  background-color: red;
+  padding: 0;
+}
+
+.miss-cell {
+  background-color: blue;
+}

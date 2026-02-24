@@ -9,6 +9,7 @@ export default function createUIController(game) {
   const player2Container = document.getElementById("player2-gameboard");
   const player2ShipsContainer = document.getElementById("player2-controls");
   let player2Handler;
+  let player1Attack;
 
   let selectedShip = null;
   let orientation = "horizontal";
@@ -52,13 +53,24 @@ export default function createUIController(game) {
   function startAttackPhase(player1, player2) {
     player1ShipsContainer.innerHTML = "";
     orientationToggleButton.style.display = "none";
+    player1Attack = createAttackHandler(player1, player2);
+    renderGameBoard(player2.getBoard(), player2Container, player1Attack, false);
+  }
 
-    renderGameBoard(
-      player2.getBoard(),
-      player2Container,
-      player2Handler,
-      false
-    );
+  function createAttackHandler(player, opponent) {
+    return function handleAttackClick(x, y) {
+      try {
+        player.attack(opponent, x, y);
+        renderGameBoard(
+          opponent.getBoard(),
+          player2Container,
+          player1Attack,
+          false
+        );
+      } catch (error) {
+        console.log("Error" + error);
+      }
+    };
   }
 
   function setupUI() {

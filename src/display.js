@@ -29,10 +29,9 @@ export function renderGameBoard(
         if (isPlayerBoard) {
           gridCoordinate.classList.add("ship-cell");
         }
-      } else if (cell === "hit") {
+      } else if (cellValue && cellValue.status === "Hit") {
         gridCoordinate.classList.add("hit-cell");
-        gridCoordinate.textContent = "X";
-      } else if (cell === "miss") {
+      } else if (cellValue && cellValue.status === "Miss") {
         gridCoordinate.classList.add("miss-cell");
       }
       gridCoordinate.addEventListener("click", () => {
